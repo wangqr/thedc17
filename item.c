@@ -12,14 +12,14 @@ struct Item{                  //x,y是道具位置坐标
     int y;
 }items[4];
 
-int x0,y0,x1,y1;
+int xl,yl,xc,yc;
 bool firstTime=true;
 
 void initItems(){
     int itemNum=0;                                                              //场上有效道具数
-    else if((input_data.raw_data[1]>>3)&7==1) itemNum=1;
-    else if((input_data.raw_data[1]>>3)&7==2) itemNum=2;
-    else if((input_data.raw_data[1]>>3)&7==3) itemNum=3;
+    if(((input_data.raw_data[1]>>3)&7)==1) itemNum=1;
+    else if(((input_data.raw_data[1]>>3)&7)==2) itemNum=2;
+    else if(((input_data.raw_data[1]>>3)&7)==3) itemNum=3;
     else itemNum=4;
     for(int i=0;i<itemNum;i++){
         items[i].x=input_data.raw_data[11+2*i];
@@ -29,34 +29,32 @@ void initItems(){
         items[i].x=-1;
         items[i].y=-1;
     }
-    myItems[0].ID=(input_data.raw_data[2]>>4)&15;               
-    myItems[1].ID=(input_data.raw_data[2])&15;
     
     int ID=input_data.raw_data[0]>>6;                            // 选手ID
-    if(firstTime){                                              // (x0,y0): 上次记录的位置坐标; (x1,y1): 本次记录的位置坐标.
-        x0=input_data.raw_data[4+2*ID];
-        y0=input_data.raw_data[5+2*ID];
-        x1=x0;
-        y1=y0;
+    if(firstTime){                                              // (xl,yl): 上次记录的位置坐标; (xc,yc): 本次记录的位置坐标.
+        xl=input_data.raw_data[4+2*ID];
+        yl=input_data.raw_data[5+2*ID];
+        xc=xl;
+        yc=yl;
         firstTime=false;
     }
     else{
-        x0=x1;
-        y0=y1;
-        x1=input_data.raw_data[4+2*ID];
-        y1=input_data.raw_data[5+2*ID];
+        xl=xc;
+        yl=yc;
+        xc=input_data.raw_data[4+2*ID];
+        yc=input_data.raw_data[5+2*ID];
     }
 }
 
 double angle(int x,int y){                                            //返回该坐标与小车连线和小车现在行驶方向的夹角（角度值）
-    int carDirectionX= x1-x0, carDirectionY=y1-y0;
-    int targetDirectionX= x-x1, targetDirectionY=y-y1;
+    int carDirectionX= xc-xl, carDirectionY=yc-yl;
+    int targetDirectionX= x-xc, targetDirectionY=y-yc;
     if((carDirectionX==0&&carDirectionY==0)||(targetDirectionX==0&&targetDirectionY==0) return 0;      //避免下面计算出现错误
     return acos((carDirectionX*carDirectionY+targetDirectionX*targetDirectionY)/((carDirectionX^2+carDirectionY^2)^0.5*(targetDirectionX^2+targetDirectionY^2)^0.5))/pi*180;
 }
 
 double Distance(x,y){                                                  //返回该坐标与小车距离
-    return ((x-x1)^2+(y-y1)^2)^0.5;
+    return ((x-xc)^2+(y-yc)^2)^0.5;
 }
 
 int firstItem(){                                                     //返回在一定夹角范围内且离自己最近的道具
@@ -87,10 +85,10 @@ void collectItems(int n){
     }
     if(j<SensorNum) return;
 
-    int carX= x1-x0, carY= y1-y0;                                          //小车方向
-    int targeX= items[n].x-x1, targetY=items[n].y-y1;                      //道具与小车连线的方向
+    int carX= xc-xl, carY= yc-yl;                                          //小车方向
+    int targeX= items[n].x-xc, targetY=items[n].y-yc;                      //道具与小车连线的方向
 
-    if(abs(targetX-x1)<=nearX&&abs(targetY-y1)<=nearY){                    //如果小车已经在道具周围，停一段时间
+    if(abs(targetX-xc)<=nearX&&abs(targetY-yc)<=nearY){                    //如果小车已经在道具周围，停一段时间
         SetMotor(0,0);
         SetMotor(1,0);
         DELAY_US(ItemEatingTime);
@@ -135,8 +133,9 @@ void collectItems(int n){
     }
 }
 
-void items(){                                                        //main函数调用它就好啦
+void Items(){                                                        //main函数调用它就好啦
     UpdateData();
     initItems();                        
     collectItems(firstItem());   
+	return;
 }
