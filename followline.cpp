@@ -17,9 +17,10 @@ void turn(bool direction,bool level){    //设置转弯幅度
 			SetMotor(1,pwm+delta_power);
 		}
 	}
+	LightSensorFlag=0;
 }
 
-void follow_line(){                        //巡线
+void FollowLine(){                        //巡线
 	if(GetLightSensor(1)==0){
 		turn(0,1);
 	}
