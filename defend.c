@@ -1,44 +1,51 @@
-#include "stdio.h"
-#include "math.h"
+#include "th_base.h"
 
-int myID;
-int myItem0,myItem1;                                 // 已有道具的ID
-
-void initMyProps(){
-    myItem0=(input_data.raw_data[2]>>4)&15;               
-    myItem1=(input_data.raw_data[2])&15;
+char myID;
+int myItem0,myItem1;
+char defend_flag;
+char attackItem;
+void initMyItems(){
+    myItem0=(input_data.raw_data[2]>>4)&0x0f;
+    myItem1=(input_data.raw_data[2])&0x0f;
 }
 
-void useItem(int ID){                               // 给上位机发送指令装备防御道具，不会写
-
+void useItem(char itemID, char targetID=myID){
+    char ch=myID<<6+targetID<<4+itemID;
+    scia_xmit(ch);
+    scia_xmit(0x0d);
+    scia_xmit(0x0a);
 }
 
-void defend(){
-    initMyProps();
-    if(input_data.raw_data[1]&7)==1) return;         // 如果已经装备护盾，返回
+void defend(void){
+    defend_flag=0;
+    initMyItems();
+    if((input_data.raw_data[1]&7)==1) return;
     
-    int myID=input_data.raw_data[0]>>6;
-    if((input_data.raw_data[19]>>myID)&1){          // 成为被攻击目标时，查看是否有护盾道具并装备
-    	if(myItem0==1){
-    			useItem(1);
-    			return;
-    		}
-    		else if(myItem1==1){
-    			useItem(1);
-    			return;
-    		}
+    myID=input_data.raw_data[0]>>6;
+    if((input_data.raw_data[19]>>myID)&1){
+        attackItem=input_data.raw_data[20];
+        if(myItem0==1||myItem1==1){
+             useItem(0x01);
+             defend_flag=1;
+             return;
+        }
+        else if(myItem0==2||myItem1==2) {
+             useItem(0x02);
+             defend_flag=1;
+             return;
+        }
     }
 
-    if((input_data.raw_data[1]&7)==2||(input_data.raw_data[1]&7)==4) {             // 处于负面状态时，查看是否有防御道具并装备
-    	for(int i=1;i<4;i++){
-    		if(myItem0==i){
-    			useItem(ID);
-    			break;
-    		}
-    		else if(myItem1==i){
-    			useItem(ID);
-    			break;
-    		}
+    if((input_data.raw_data[1]&7)==2||(input_data.raw_data[1]&7)==4) {
+                if(myItem0==3||myItem1==3){
+                      useItem(0x03);
+                      defend_flag=1;
+                      return;
+                }
+                else if((input_data.raw_data[1]&7)==2&&attackItem>>5){
+                    //如何判断小车是不是前后左右颠倒？
+                    //如果是的话，要改setmotor()？ 左右反向，速度*-1？
+
+                }
     	}
-    }
 }
