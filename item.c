@@ -2,13 +2,11 @@
 #include "th_base.h"
 #define limitAngle 90
 #define ItemEatingTime 0
-//500000
-#define pi 3.1415926
 #define SensorNum 4
 #define nearX 20
 #define nearY 20
 
-#define abs(x) ((x)<0?(-(x)):(x))
+
 
 struct Item{
     int x;
@@ -17,21 +15,21 @@ struct Item{
 
 int xl,yl,xc,yc;
 int carDirectionX,carDirectionY;
-long double carDirection;
-long double lastTurningTime;
+float carDirection;
+float lastTurningTime;
 uint8_t firstTime = 1;
 uint8_t _item_c_data_updated=0;
 
-void useItem(int ID);
+void useItem(int ID, int target_id);
 
-long double arctan(long double x, long double y){
+float arctan(float x, float y){
 	if(x==0){
 		if(y>0){
 			return pi/2;
 		}
 		return -pi/2;
 	}
-	long double res = atan(y/x);
+	float res = atan(y/x);
 	if(x<0){
 		res = res + (res>0)?(-pi):pi;
 	}
@@ -40,13 +38,13 @@ long double arctan(long double x, long double y){
 
 void initItems(){
     int i;
-    long double car_turned, tmp;
+    float car_turned, tmp;
     int itemNum=((input_data.raw_data[1]>>3)&7);
     for(i=0;i<itemNum;i++){
         items[i].x=input_data.raw_data[11+2*i];
         items[i].y=input_data.raw_data[12+2*i];
         if(abs(xc-items[i].x)<8&&abs(yc-items[i].y)<8){
-        	useItem(0x0e);
+        	useItem(0x0e, input_data.raw_data[0]>>6);
         }
     }
     for(;i<4;i++){
@@ -109,7 +107,7 @@ int firstItem(){
     int i;
     int FirstItem=-1;
     int minDistance=512;
-    long double tmp;
+    float tmp;
     /*if(79<=xc&&xc<=176&&yc<=79){
     	for(i=0;i<4;i++){
     	    if(items[i].x==-1||items[i].y==-1) break;

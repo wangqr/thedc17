@@ -7,6 +7,8 @@
 
 #include "th_base.h"
 
+#include <math.h>
+
 void init_base(void){
 
 
@@ -48,83 +50,50 @@ void init_base(void){
     PIE_setDebugIntVectorTable(myPie);
     PIE_enable(myPie);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-    // Initialize GPIO
-    GPIO_setPullUp(myGpio, GPIO_Number_28, GPIO_PullUp_Enable);
-    GPIO_setPullUp(myGpio, GPIO_Number_29, GPIO_PullUp_Disable);
-    GPIO_setQualification(myGpio, GPIO_Number_28, GPIO_Qual_ASync);
-    GPIO_setMode(myGpio, GPIO_Number_28, GPIO_28_Mode_SCIRXDA);
-    GPIO_setMode(myGpio, GPIO_Number_29, GPIO_29_Mode_SCITXDA);
-
-// Interrupts that are used in this example are re-mapped to
-// ISR functions found within this file.
-    EALLOW;    // This is needed to write to EALLOW protected registers
-//   PieVectTable.SCIRXINTA = &sciaRxFifoIsr;
-    ((PIE_Obj *)myPie)->SCIRXINTA = &sciaRxFifoIsr;
-//   PieVectTable.SCITXINTA = &sciaTxFifoIsr;
-    //((PIE_Obj *)myPie)->SCITXINTA = &sciaTxFifoIsr;
-    EDIS;   // This is needed to disable write to EALLOW protected registers
-
-    // Register interrupt handlers in the PIE vector table
-    PIE_registerPieIntHandler(myPie, PIE_GroupNumber_9, PIE_SubGroupNumber_1,
-                              (intVec_t)&sciaRxFifoIsr);
-    //PIE_registerPieIntHandler(myPie, PIE_GroupNumber_9, PIE_SubGroupNumber_2,
-    //                          (intVec_t)&sciaTxFifoIsr);
-
-    scia_init();        // Init SCI-A
-    scia_fifo_init();   // Init SCI-A Fifos
-
-    // Enable interrupts required for this example
-    PIE_enableInt(myPie, PIE_GroupNumber_9, PIE_InterruptSource_SCIARX);
-    //PIE_enableInt(myPie, PIE_GroupNumber_9, PIE_InterruptSource_SCIATX);
-
-    CPU_enableInt(myCpu, CPU_IntNumber_9);
-    CPU_enableGlobalInts(myCpu);
-
-    while(1);
-*/
-
-
     input_data.raw_data = input_data._raw_data;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	init_pwm();
 	init_sensor();
 	init_thedc();
 
-
     CPU_enableGlobalInts(myCpu);
-    //DELAY_US(10000);
+
+    pi = acos(-1);
+
+    _9_axis_angle = 0;
+}
+
+
+void delay_us(float t){
+    while(t>100000){
+        DELAY_US(100000);
+        t -= 100000;
+    }
+    if(t>0) DELAY_US(t);
+}
+
+void log_m(char* s){
+    scia_xmit('l');
+    while(*s){
+        if(*s=='"'){
+            scia_xmit('\\');
+            scia_xmit('"');
+        }
+        else{
+            scia_xmit(*s);
+        }
+        ++s;
+    }
+    scia_xmit('"');
+}
+
+float diff_angle(float a, float b){
+    float q = a - b;
+    if (q < -pi){
+        q += 2*pi;
+    }
+    else if (q > pi){
+        q -= 2*pi;
+    }
+    return q;
 }

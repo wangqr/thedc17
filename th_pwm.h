@@ -22,4 +22,6 @@ extern PWM_Handle myPwm1, myPwm2;
 extern PWM_Handle _th_pwm_handles[2];
 void init_pwm (void);
 void SetMotor(uint8_t index, int8_t speed);
+void goto_pos(uint8_t x, uint8_t y);
+void follow_car();
 #endif /* TH_PWM_H_ */

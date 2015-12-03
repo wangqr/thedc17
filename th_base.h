@@ -30,7 +30,12 @@ extern PLL_Handle myPll;
 extern WDOG_Handle myWDog;
 extern PWM_Handle myPwm1, myPwm2;
 extern SCI_Handle mySci;
-extern long double TurningTime;
+extern float TurningTime, Speed, current_dir, last_turn_time;
+extern uint8_t last_x;
+extern uint8_t last_y;
+extern int16_t _9_axis_angle;
+extern int32_t _9_axis_diff;
+extern float pi;
 
 typedef signed char int8_t;
 
@@ -38,11 +43,19 @@ typedef signed char int8_t;
 #include "th_sensor.h"
 #include "th_thedc.h"
 
+#define abs(x) ((x)<0?(-(x)):(x))
+
 struct ThedcData {
     char *raw_data;
     char _raw_data[46];
 };
 
 void init_base(void);
+
+void delay_us(float t);
+
+void log_m(char*);
+
+float diff_angle(float, float);
 
 #endif /* TH_BASE_H_ */

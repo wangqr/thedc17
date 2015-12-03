@@ -22,7 +22,7 @@
 #include "th_base.h"
 
 extern GPIO_Handle myGpio;
-extern volatile struct ThedcData input_data;
+extern struct ThedcData input_data;
 
 __interrupt void sciaRxFifoIsr(void);
 
@@ -36,5 +36,7 @@ void scia_msg(char *msg);
 
 void init_thedc();
 void UpdateData(uint8_t);
+
+extern volatile uint8_t update_flag;
 
 #endif /* TH_THEDC_H_ */
