@@ -24,10 +24,12 @@ void useItem(int ID, int target_id){
     scia_xmit(0x0d);
     scia_xmit(0x0a);
     scia_xmit('"');
+    /*
     if(ID!=0x0e){
         sprintf(buff,"item %x%x\n", target_id, ID);
         log_m(buff);
     }
+    */
 }
 
 void defend(void){
