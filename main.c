@@ -20,28 +20,12 @@ void LightSensorInterrupt(void){
 void useItem(int ID, int target_id);
 
 int main(){
-    struct test_t{
-        uint8_t a : 4;
-        uint8_t b : 4;
-    } test;
-    struct test2_t{
-        uint8_t a : 4;
-        uint8_t b : 4;
-    } test2;
-    char buff[80];
-
 	init_base();
 	log_m("init OK\n");
 	update_flag = 0;
 	while(update_flag & 0x01 == 0);
     uint8_t ID = input_data.raw_data[0]>>6;
     int32_t xc, yc;
-    test.a=1;
-    test.b=0;
-    test2.a=1;
-    test2.b=0;
-    sprintf(buff,"test %02x %04x\n",(int)(*((uint8_t*)(&test))),(int)(*((uint16_t*)(&test2))));
-    log_m(buff);
 
 	while(1){
 
@@ -70,72 +54,11 @@ int main(){
 	}
 }
 
-
-
 //followline.c
 
-/*void FollowLine(void){
-	uint8_t ls[4];
-	LightSensorFlag = 1;
-	while(LightSensorFlag){
-		ls[0] = GetLightSensor(0);
-		ls[1] = GetLightSensor(1);
-		ls[2] = GetLightSensor(2);
-		ls[3] = GetLightSensor(3);
-	    int ID=input_data.raw_data[0]>>6;
-        int xl=input_data.raw_data[3+2*ID];
-        int yl=input_data.raw_data[4+2*ID];
-        if((xl>107 && xl<148 && yl>47 && yl<192)||(xl>47 && xl<192 && yl>107 && yl<148)){
-            log_m("b\n");
-            SetMotor(0,-970);
-            SetMotor(1,-970);
-            DELAY_US(100000);
-        }
-        else if(!ls[0] && !ls[1] && !ls[2] && !ls[3]){
-			SetMotor(0,970);
-			SetMotor(1,970);
-			DELAY_US(50000);
-			LightSensorFlag = 0;
-		}
-		else if(xl>90 && xl<165 && yl>90 && yl<165){
-            SetMotor(0,-970);
-            SetMotor(1,970);
-            DELAY_US(50000);
-		}
-		else if(ls[1] && ls[2]){
-		    log_m("b+\n");
-			SetMotor(0,-970);
-			SetMotor(1,-970);
-			DELAY_US(100000);
-		}
-		else if(ls[1]){
-			SetMotor(0,970);
-			SetMotor(1,-970);
-			DELAY_US(50000);
-		}
-		else if(ls[2]){
-			SetMotor(0,-970);
-			SetMotor(1,970);
-			DELAY_US(50000);
-		}
-		else if(ls[0] && ls[3]){
-
-		}
-		else if(ls[0]){
-			SetMotor(0,970);
-			SetMotor(1,-970);
-			DELAY_US(50000);
-		}
-		else if(ls[3]){
-			SetMotor(0,-970);
-			SetMotor(1,970);
-			DELAY_US(5000);
-		}
-	}
-}*/
 void FollowLine(void){
     uint8_t ls[4];
-    //LightSensorFlag = 1;
+    LightSensorFlag = 1;
     //while(LightSensorFlag){
     ls[0] = GetLightSensor(0);
     ls[1] = GetLightSensor(1);
@@ -151,7 +74,7 @@ void FollowLine(void){
         SetMotor(0,1000);
         SetMotor(1,1000);
         DELAY_US(5000);
-        //LightSensorFlag = 0;
+        LightSensorFlag = 0;
     }
     else if(ls[1]){
         last_turn_time += 5000;
@@ -194,7 +117,6 @@ char ifAttack(){
 }
 
 void attack(void){
-    char buff[64];
 
     //sprintf(buff,"9=%d a=%d I0:%d I1:%d\n",_9_axis_angle,(int)(current_dir / pi * 180),myItem0,myItem1);
     //log_m(buff);

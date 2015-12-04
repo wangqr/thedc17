@@ -73,6 +73,7 @@ void delay_us(float t){
 }
 
 void log_m(char* s){
+    /*
     scia_xmit('l');
     while(*s){
         if(*s=='"'){
@@ -85,6 +86,7 @@ void log_m(char* s){
         ++s;
     }
     scia_xmit('"');
+    */
 }
 
 float diff_angle(float a, float b){
