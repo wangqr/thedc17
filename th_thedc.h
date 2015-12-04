@@ -1,9 +1,3 @@
-/*
- * th_thedc.h
- *
- *  Created on: 2015Äê10ÔÂ28ÈÕ
- *      Author: wangqr
- */
 
 #ifndef TH_THEDC_H_
 #define TH_THEDC_H_

@@ -1,8 +1,3 @@
-/*
- * th_pwm.h
- *
- *      Author: wangqr
- */
 
 #ifndef TH_PWM_H_
 #define TH_PWM_H_
@@ -20,7 +15,7 @@
 #include "th_base.h"
 extern PWM_Handle myPwm1, myPwm2;
 extern PWM_Handle _th_pwm_handles[2];
-void init_pwm (void);
+void init_pwm(void);
 void SetMotor(uint8_t index, int8_t speed);
 void goto_pos(uint8_t x, uint8_t y);
 void follow_car();

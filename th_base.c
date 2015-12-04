@@ -1,15 +1,9 @@
-/*
- * th_base.c
- *
- *      Author: wangqr
- */
-
 
 #include "th_base.h"
 
 #include <math.h>
 
-void init_base(void){
+void init_base(void) {
 
 
     // Initialize all the handles needed for this application
@@ -52,9 +46,9 @@ void init_base(void){
 
     input_data.raw_data = input_data._raw_data;
 
-	init_pwm();
-	init_sensor();
-	init_thedc();
+    init_pwm();
+    init_sensor();
+    init_thedc();
 
     CPU_enableGlobalInts(myCpu);
 
@@ -63,16 +57,15 @@ void init_base(void){
     _9_axis_angle = 0;
 }
 
-
-void delay_us(float t){
-    while(t>100000){
+void delay_us(float t) {
+    while (t > 100000) {
         DELAY_US(100000);
         t -= 100000;
     }
-    if(t>0) DELAY_US(t);
+    if (t > 0) DELAY_US(t);
 }
 
-void log_m(char* s){
+void log_m(char* s) {
     /*
     scia_xmit('l');
     while(*s){
@@ -89,13 +82,13 @@ void log_m(char* s){
     */
 }
 
-float diff_angle(float a, float b){
+float diff_angle(float a, float b) {
     float q = a - b;
-    if (q < -pi){
-        q += 2*pi;
+    if (q < -pi) {
+        q += 2 * pi;
     }
-    else if (q > pi){
-        q -= 2*pi;
+    else if (q > pi) {
+        q -= 2 * pi;
     }
     return q;
 }

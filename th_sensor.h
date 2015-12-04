@@ -1,9 +1,3 @@
-/*
- * th_sensor.h
- *
- *  Created on: 2015Äê10ÔÂ28ÈÕ
- *      Author: wangqr
- */
 
 #ifndef TH_SENSOR_H_
 #define TH_SENSOR_H_
@@ -23,14 +17,14 @@ extern GPIO_Handle myGpio;
 
 __interrupt void xint1_isr(void);
 
-extern void (*_th_sensor_callback)();
+extern void(*_th_sensor_callback)();
 
 #define _th_light_sensor_cnt 4
 extern const GPIO_Number_e _th_light_sensor_pin[4];
 
 void init_sensor();
-void th_sensor_set_callback(void (*f)());
-uint8_t GetLightSensor (uint8_t index);
+void th_sensor_set_callback(void(*f)());
+uint8_t GetLightSensor(uint8_t index);
 __interrupt void xint1_isr(void);
 
 #endif /* TH_SENSOR_H_ */

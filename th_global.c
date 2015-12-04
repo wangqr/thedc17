@@ -1,10 +1,3 @@
-/*
- * th_global.c
- *
- *  Created on: 2015Äê10ÔÂ29ÈÕ
- *      Author: wangqr
- */
-
 
 #include "th_base.h"
 

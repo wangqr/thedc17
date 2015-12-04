@@ -1,9 +1,3 @@
-/*
- * th_base.h
- *
- *  Created on: 2015Äê10ÔÂ28ÈÕ
- *      Author: wangqr
- */
 
 #ifndef TH_BASE_H_
 #define TH_BASE_H_
